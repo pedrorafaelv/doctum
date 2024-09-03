@@ -39,13 +39,15 @@ class PostController extends Controller
             'content.min'=>'el content minimo son :min caracteres',
 
         ];
-        $validator = Validator::make($request->route()->parameters, $rules, $messages);
+        //  dd($request->all());
+        // dd($request->route()->parameters);
+        $validator = Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()){
              return response()->json(['Error'=> 'Error al Crear Post', 'errors '=>$validator->errors()], 400);
         }
         try {
         $nuevoPost = new Post();
-        $nuevoPost->fill($request->route()->parameters);
+        $nuevoPost->fill($request->all());
         // Guardamos la nueva empresa en la base de datos
         $resp = $nuevoPost->save();
         // Devolvemos una respuesta con el código HTTP 201 y el mensaje de que se ha creado correctamente
@@ -89,9 +91,9 @@ class PostController extends Controller
         ];
         $post = Post::find($id);
         if($post){
-            $validator = Validator::make($request->route()->parameters, $rules, $messages);
+            $validator = Validator::make($request->all(), $rules, $messages);
             if (!$validator->fails()){
-                $res = $post->update($request->route()->parameters);
+                $res = $post->update($request->all());
                 if($res){
                    return response()->json(['message'=>'post', 'data'=>$post], 200);
                 }
